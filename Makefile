@@ -11,7 +11,7 @@ HELPTEXT = "\
 \n                               \
 \n    CC         ($(CC))         \
 \n    CFLAGS     ($(ALL_CFLAGS)) \
-\n    LDFLAGS    ($(ALL_LDFLAGS))\
+\n    LDFLAGS    ($(LDFLAGS))    \
 \n    INSTALL    ($(INSTALL))    \
 \n                               \
 \n    PYTHON     ($(PYTHON))     \
@@ -39,7 +39,7 @@ BLDDIR = build
 CFLAGS = -g -Wall -O2
 LDFLAGS =
 ALL_CFLAGS = -fPIC $(CFLAGS)
-ALL_LDFLAGS = -lm $(LDFLAGS)
+LIBS = -lm
 
 INSTALL = install
 CC = gcc
@@ -122,7 +122,7 @@ $(BLDDIR)/libdablooms.a: $(OBJS_LIBDABLOOMS)
 
 $(BLDDIR)/libdablooms.$(SO_EXT): $(OBJS_LIBDABLOOMS)
 	@echo " SO " $@
-	@$(CC) -o $@ $(ALL_CFLAGS) $(SHARED_LDFLAGS) $(ALL_LDFLAGS) $^
+	@$(CC) -o $@ $(ALL_CFLAGS) $(SHARED_LDFLAGS) $(LDFLAGS) $^ $(LIBS)
 
 $(patsubst %, $(BLDDIR)/%, $(LIB_SYMLNKS)): %: $(BLDDIR)/libdablooms.$(SO_EXT)
 	@echo " SYMLNK " $@
@@ -131,7 +131,7 @@ $(patsubst %, $(BLDDIR)/%, $(LIB_SYMLNKS)): %: $(BLDDIR)/libdablooms.$(SO_EXT)
 
 $(BLDDIR)/test_dablooms: $(OBJS_TESTS) $(BLDDIR)/libdablooms.a
 	@echo " LD " $@
-	@$(CC) -o $@ $(ALL_CFLAGS) $(ALL_LDFLAGS) $(OBJS_TESTS) $(BLDDIR)/libdablooms.a
+	@$(CC) -o $@ $(ALL_CFLAGS) $(LDFLAGS) $(OBJS_TESTS) $(BLDDIR)/libdablooms.a $(LIBS)
 
 test: $(BLDDIR)/test_dablooms
 	@$(BLDDIR)/test_dablooms $(BLDDIR)/testbloom.bin $(WORDS)
